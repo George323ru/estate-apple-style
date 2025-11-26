@@ -1,0 +1,8 @@
+{
+  "name": "Estate Apple Style",
+  "description": "Premium Real Estate Application with AI Staging capabilities using Gemini 2.5 Flash Image.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
