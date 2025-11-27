@@ -30,6 +30,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/buy-new', label: 'Подобрать инвест-проект' },
     content: `<h3>Рост стоимости</h3><p>Покупка на этапе котлована — это классическая инвестиция...</p>`
   },
+  {
+    id: 'buy-new-4',
+    title: "Инфраструктура с нуля: риск или возможность?",
+    excerpt: "Как не купить квартиру в поле. Планы развития районов Москвы до 2030 года.",
+    date: "12 Окт 2024",
+    image: "https://picsum.photos/800/600?random=204",
+    relatedService: { link: '/buy-new', label: 'Карта развития' },
+    content: `<h3>Город в городе</h3><p>Современные ЖК строятся по принципу 'город в городе'...</p>`
+  },
+  {
+    id: 'buy-new-5',
+    title: "Эскроу-счета: полная защита ваших денег",
+    excerpt: "Почему больше не нужно бояться долгостроев и обманутых дольщиков.",
+    date: "11 Окт 2024",
+    image: "https://picsum.photos/800/600?random=205",
+    relatedService: { link: '/buy-new', label: 'Безопасная сделка' },
+    content: `<h3>Банк как гарант</h3><p>Деньги хранятся в банке до получения ключей...</p>`
+  },
+  {
+    id: 'buy-new-6',
+    title: "Рассрочка от застройщика",
+    excerpt: "Когда это выгоднее ипотеки? Обзор программ 0% до сдачи дома.",
+    date: "10 Окт 2024",
+    image: "https://picsum.photos/800/600?random=206",
+    relatedService: { link: '/buy-new', label: 'Каталог рассрочек' },
+    content: `<h3>Альтернатива ипотеке</h3><p>Многие застройщики предлагают беспроцентную рассрочку...</p>`
+  },
+
   // --- TOOLS & PROCESS (Buy Primary) ---
   {
     id: 'tool-ai-match',
@@ -76,6 +104,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/buy-resale', label: 'Искать по району' },
     content: `<h3>Сложившаяся среда</h3><p>Вы покупаете жилье в районе, где уже работают школы...</p>`
   },
+  {
+    id: 'buy-sec-4',
+    title: "Торг уместен: как сбить цену",
+    excerpt: "Психология переговоров с собственником. Аргументы, которые работают.",
+    date: "03 Окт 2024",
+    image: "https://picsum.photos/800/600?random=220",
+    relatedService: { link: '/buy-resale', label: 'Услуги брокера' },
+    content: `<h3>Факты вместо эмоций</h3><p>Мы используем отчеты о дефектах для обоснованного торга...</p>`
+  },
+  {
+    id: 'buy-sec-5',
+    title: "Скрытые дефекты ремонта",
+    excerpt: "Как увидеть плесень под обоями и плохую проводку до покупки.",
+    date: "02 Окт 2024",
+    image: "https://picsum.photos/800/600?random=221",
+    relatedService: { link: '/renovation', label: 'Технадзор' },
+    content: `<h3>Тепловизор не врет</h3><p>Проверка углов и окон поможет избежать холодных зим...</p>`
+  },
+  {
+    id: 'buy-sec-6',
+    title: "Перепланировка: риски покупки",
+    excerpt: "Красные линии БТИ. Что можно узаконить, а что грозит штрафом.",
+    date: "01 Окт 2024",
+    image: "https://picsum.photos/800/600?random=222",
+    relatedService: { link: '/buy-resale', label: 'Юр. консультация' },
+    content: `<h3>Мокрые зоны</h3><p>Перенос кухни в жилую зону может стать причиной отказа в сделке...</p>`
+  },
+
   // --- TOOLS (Secondary) ---
   {
     id: 'tool-history',
@@ -122,6 +178,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/ai-generator', label: 'Создать объявление с AI' },
     content: `<h3>Омниканальность</h3><p>Ваше объявление увидят везде...</p>`
   },
+  {
+    id: 'sell-4',
+    title: "Налоги при продаже",
+    excerpt: "Как законно уменьшить налоговую базу и подать декларацию.",
+    date: "06 Окт 2024",
+    image: "https://picsum.photos/800/600?random=230",
+    relatedService: { link: '/sell', label: 'Консультация' },
+    content: `<h3>Сроки владения</h3><p>Если вы владели квартирой более 5 лет...</p>`
+  },
+  {
+    id: 'sell-5',
+    title: "Пакет документов для сделки",
+    excerpt: "Полный чек-лист справок и выписок для быстрой продажи.",
+    date: "05 Окт 2024",
+    image: "https://picsum.photos/800/600?random=231",
+    relatedService: { link: '/sell', label: 'Скачать чек-лист' },
+    content: `<h3>Готовность документов</h3><p>Покупатели любят, когда документы готовы к сделке...</p>`
+  },
+  {
+    id: 'sell-6',
+    title: "Безопасные расчеты",
+    excerpt: "Аккредитив или ячейка? Как гарантированно получить деньги.",
+    date: "04 Окт 2024",
+    image: "https://picsum.photos/800/600?random=232",
+    relatedService: { link: '/sell', label: 'Услуги сопровождения' },
+    content: `<h3>Деньги под защитой</h3><p>Мы рекомендуем использовать систему безопасных расчетов...</p>`
+  },
+
   // --- TOOLS (Sell) ---
   {
     id: 'tool-3d',
@@ -168,6 +252,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/rent-out', label: 'Доверительное управление' },
     content: `<h3>Скоринг</h3><p>Мы проверяем арендаторов по базам кредитных историй...</p>`
   },
+  {
+    id: 'rent-4',
+    title: "Идеальный договор аренды",
+    excerpt: "Пункты, которые защитят собственника от неплатежей.",
+    date: "30 Сен 2024",
+    image: "https://picsum.photos/800/600?random=240",
+    relatedService: { link: '/rent-out', label: 'Шаблон договора' },
+    content: `<h3>Юридическая защита</h3><p>Наш договор предусматривает все риски...</p>`
+  },
+  {
+    id: 'rent-5',
+    title: "Опись имущества",
+    excerpt: "Зачем фиксировать каждую ложку и как это помогает при выезде.",
+    date: "29 Сен 2024",
+    image: "https://picsum.photos/800/600?random=241",
+    relatedService: { link: '/rent-out', label: 'Услуги менеджера' },
+    content: `<h3>Акт приема-передачи</h3><p>Фотофиксация состояния мебели снимает вопросы при возврате депозита...</p>`
+  },
+  {
+    id: 'rent-6',
+    title: "Решение конфликтов",
+    excerpt: "Что делать, если соседи жалуются или жилец не платит.",
+    date: "28 Сен 2024",
+    image: "https://picsum.photos/800/600?random=242",
+    relatedService: { link: '/rent-out', label: 'Поддержка 24/7' },
+    content: `<h3>Медиация</h3><p>Мы берем на себя общение в конфликтных ситуациях...</p>`
+  },
+
   // --- TOOLS (Rent) ---
   {
     id: 'tool-scoring',
@@ -214,6 +326,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/preparation', label: 'Фотосъемка' },
     content: `<h3>Визуал решает</h3><p>В онлайне конкурируют не квартиры, а фотографии...</p>`
   },
+  {
+    id: 'prep-4',
+    title: "Свет в интерьере",
+    excerpt: "Как правильное освещение делает квартиру дороже и просторнее.",
+    date: "27 Сен 2024",
+    image: "https://picsum.photos/800/600?random=250",
+    relatedService: { link: '/preparation', label: 'Советы дизайнера' },
+    content: `<h3>Теплый или холодный?</h3><p>Замена лампочек может полностью изменить восприятие пространства...</p>`
+  },
+  {
+    id: 'prep-5',
+    title: "Аромамаркетинг в недвижимости",
+    excerpt: "Запахи кофе и выпечки: секретное оружие риэлтора.",
+    date: "26 Сен 2024",
+    image: "https://picsum.photos/800/600?random=251",
+    relatedService: { link: '/preparation', label: 'Подготовка к показу' },
+    content: `<h3>Эмоциональная связь</h3><p>Запахи напрямую влияют на лимбическую систему мозга...</p>`
+  },
+  {
+    id: 'prep-6',
+    title: "Текстиль: уют за копейки",
+    excerpt: "Как шторы и пледы скрывают недостатки и создают атмосферу.",
+    date: "25 Сен 2024",
+    image: "https://picsum.photos/800/600?random=252",
+    relatedService: { link: '/preparation', label: 'Декорирование' },
+    content: `<h3>Тактильные ощущения</h3><p>Мягкий текстиль заставляет покупателя почувствовать себя дома...</p>`
+  },
+
   // --- TOOLS (Prep) ---
   {
     id: 'tool-declutter',
@@ -260,6 +400,34 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedService: { link: '/renovation', label: 'Консультация' },
     content: "<h3>Баланс</h3><p>White Box позволяет быстро сделать финиш под конкретного жильца, а 'под ключ' экономит время...</p>"
   },
+  {
+    id: 'renov-4',
+    title: "Электрика: частые ошибки",
+    excerpt: "Где разместить розетки, чтобы не использовать удлинители.",
+    date: "04 Ноя 2024",
+    image: "https://picsum.photos/800/600?random=260",
+    relatedService: { link: '/renovation', label: 'Дизайн-проект' },
+    content: "<h3>План электрики</h3><p>Продумайте сценарии жизни до начала штробления стен...</p>"
+  },
+  {
+    id: 'renov-5',
+    title: "Шумоизоляция: мифы и реальность",
+    excerpt: "Стоит ли тратить деньги и съедает ли она пространство.",
+    date: "05 Ноя 2024",
+    image: "https://picsum.photos/800/600?random=261",
+    relatedService: { link: '/renovation', label: 'Инженерный проект' },
+    content: "<h3>Тишина стоит денег</h3><p>Каркасная звукоизоляция эффективнее, но забирает 5-7 см от стены...</p>"
+  },
+  {
+    id: 'renov-6',
+    title: "Дизайн-проект: экономия или трата?",
+    excerpt: "Как чертежи помогают сэкономить до 30% бюджета на переделках.",
+    date: "06 Ноя 2024",
+    image: "https://picsum.photos/800/600?random=262",
+    relatedService: { link: '/ai/renovation-est', label: 'AI Дизайн' },
+    content: "<h3>Строить по плану</h3><p>Изменения на бумаге бесплатны, изменения на стройке стоят дорого...</p>"
+  },
+
   // --- TOOLS (Renovation) ---
   {
     id: 'tool-tech-supervision',

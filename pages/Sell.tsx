@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Section from '../components/Section';
 import GlassCard from '../components/GlassCard';
 import LeadForm from '../components/LeadForm';
@@ -9,19 +9,41 @@ import ReviewsSection from '../components/ReviewsSection';
 import ComparisonBlock from '../components/ComparisonBlock';
 import ExpertsSection from '../components/ExpertsSection';
 import ProcessTimeline from '../components/ProcessTimeline';
+import AIHeroCarousel from '../components/AIHeroCarousel';
 import { Link } from 'react-router-dom';
 import { 
-  Zap, BarChart3, ArrowRight, CheckCircle, FileText, PenTool, Sparkles, Wand2, Camera, TrendingUp, Image, Edit3, MapPin, Box, Package, Target, Coins
+  Zap, BarChart3, ArrowRight, CheckCircle, FileText, PenTool, Sparkles, Wand2, Camera, TrendingUp, Image, Edit3, MapPin, Box, Package, Target, Coins, Hammer, Calculator, MessageCircle, Scale, ShieldCheck
 } from 'lucide-react';
 import { PAGE_CONTENT } from '../services/contentData';
 import { BLOG_POSTS } from '../services/blogData';
+import { SchemaMarkup } from '../components/SchemaMarkup';
+import Modal from '../components/Modal';
 
-const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('sell-')).slice(0, 3);
+const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('sell-')).slice(0, 6);
 
 const Sell: React.FC = () => {
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Продажа недвижимости",
+    "description": PAGE_CONTENT.SELL.seo.description,
+    "provider": {
+        "@type": "RealEstateAgent",
+        "name": "Estate AI"
+    },
+    "areaServed": "RU"
+  };
+
   return (
     <div className="pt-4 xl:pt-20">
-      <SEO {...PAGE_CONTENT.SELL.seo} />
+      <SEO 
+        title="Продать квартиру в Москве | Оценка и Хоумстейджинг | Estate AI" 
+        description={PAGE_CONTENT.SELL.seo.description}
+        keywords={PAGE_CONTENT.SELL.seo.keywords}
+      />
+      <SchemaMarkup schema={schemaData} />
 
       {/* 1. Hero Section */}
       <Section className="text-center relative min-h-[70vh] flex flex-col items-center justify-center">
@@ -40,12 +62,13 @@ const Sell: React.FC = () => {
             {PAGE_CONTENT.SELL.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={() => document.getElementById('form')?.scrollIntoView({behavior: 'smooth'})} className="px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform shadow-lg">
-              Оставить заявку
+            {/* HEADER CONVERSION BUTTON - SERVICE */}
+            <button 
+                onClick={() => setIsLeadFormOpen(true)}
+                className="px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform shadow-lg text-lg flex items-center justify-center gap-2"
+            >
+              <MessageCircle size={20} /> Оставить заявку
             </button>
-            <Link to="/ai-generator" className="px-8 py-4 bg-white text-black border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">
-              <Zap className="text-yellow-500" size={20} /> Генератор описания
-            </Link>
           </div>
         </div>
       </Section>
@@ -74,40 +97,43 @@ const Sell: React.FC = () => {
 
       <ComparisonBlock items={PAGE_CONTENT.SELL.comparison} theme="purple" />
 
+      {/* Why Choose Us for Selling */}
+      <Section title="Почему выбирают нас?">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+                { icon: <BarChart3 size={24} />, title: "Оценка AI", desc: "Big Data против интуиции. Алгоритмы точнее риэлторов определяют рыночную цену.", color: "bg-purple-100 text-purple-600", link: "/blog/sell-1" },
+                { icon: <Sparkles size={24} />, title: "Упаковка", desc: "Хоумстейджинг — это не ремонт, а магия упаковки, которая продает на миллион дороже.", color: "bg-pink-100 text-pink-600", link: "/blog/sell-2" },
+                { icon: <TrendingUp size={24} />, title: "Маркетинг", desc: "Секреты мощного продвижения: где рекламировать, чтобы найти покупателя за неделю.", color: "bg-blue-100 text-blue-600", link: "/blog/sell-3" },
+                { icon: <Scale size={24} />, title: "Налоги", desc: "Поможем законно оптимизировать налоги при продаже недвижимости.", color: "bg-green-100 text-green-600", link: "/blog/sell-4" },
+                { icon: <FileText size={24} />, title: "Документы", desc: "Соберем полный пакет справок и выписок, чтобы сделка прошла без задержек.", color: "bg-indigo-100 text-indigo-600", link: "/blog/sell-5" },
+                { icon: <ShieldCheck size={24} />, title: "Безопасность", desc: "Контролируем расчеты через аккредитив или ячейку. Деньги точно будут у вас.", color: "bg-orange-100 text-orange-600", link: "/blog/sell-6" }
+            ].map((item, i) => (
+                <Link key={i} to={item.link} className="block h-full group cursor-pointer">
+                    <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                        <div>
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${item.color} group-hover:bg-black group-hover:text-white transition-colors`}>
+                                {item.icon}
+                            </div>
+                            <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">{item.title}</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
+                                {item.desc}
+                            </p>
+                        </div>
+                    </div>
+                </Link>
+            ))}
+        </div>
+      </Section>
+
       {/* 4. Timeline */}
       <Section title="Как мы работаем">
           <ProcessTimeline steps={PAGE_CONTENT.SELL.timeline} colorTheme="purple" />
       </Section>
 
-      {/* NEW: Our Tools - Standardized */}
-      <Section title="Наши инструменты">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                  { id: 'sell-2', icon: <Box/>, title: "Хоумстейджинг", desc: "Декор и подготовка квартиры за наш счет." },
-                  { id: 'tool-3d', icon: <Camera/>, title: "3D-тур и Фото", desc: "Профессиональная съемка для привлечения внимания." },
-                  { id: 'tool-target', icon: <Target/>, title: "Таргетинг", desc: "Реклама в соцсетях и на 30 площадках." }
-              ].map((tool, i) => (
-                  <Link key={i} to={`/blog/${tool.id}`} className="block h-full group cursor-pointer">
-                      <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-purple-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                          <div className="flex justify-between items-start mb-6">
-                              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-100 text-purple-600 group-hover:bg-black group-hover:text-white transition-colors shadow-sm">
-                                  {React.cloneElement(tool.icon as any, { size: 24 })}
-                              </div>
-                          </div>
-                          <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">{tool.title}</h3>
-                          <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
-                              {tool.desc}
-                          </p>
-                          <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                              Подробнее <ArrowRight size={14} />
-                          </div>
-                      </GlassCard>
-                  </Link>
-              ))}
-          </div>
-      </Section>
+      {/* AI TOOLS HERO BLOCK - CAROUSEL */}
+      <AIHeroCarousel />
 
-      {/* NEW: Packages - Standardized */}
+      {/* Packages - Standardized */}
       <Section title="Пакеты услуг">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
@@ -141,69 +167,27 @@ const Sell: React.FC = () => {
 
       <ExpertsSection title="Команда продаж" colorTheme="purple" />
 
-      {/* 5. AI Teaser - DESCRIPTION GENERATOR (Kept unique) */}
-      <Section>
-        <div className="apple-glass-dark relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 border border-white/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] group">
-            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="space-y-8 order-2 lg:order-1">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur mb-4 text-yellow-300">
-                            <PenTool size={12} /> AI Copywriter
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight leading-tight">
-                            Объявление, которое <br/>
-                            продает само
-                        </h2>
-                        <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-                            Не тратьте часы на написание текста. Загрузите фото, и Gemini 2.5 создаст описание, которое подчеркнет плюсы.
-                        </p>
-                    </div>
-                    <Link to="/ai-generator" className="inline-flex items-center gap-3 bg-white text-black hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg">
-                        Создать описание <Wand2 size={20} className="text-purple-600" />
-                    </Link>
-                </div>
-                <div className="order-1 lg:order-2 relative">
-                    <div className="bg-gray-900/80 backdrop-blur-md border border-white/10 rounded-3xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl">
-                        <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-4">
-                            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span className="ml-auto text-xs font-mono text-gray-500">Gemini_Writer.exe</span>
-                        </div>
-                        <div className="space-y-4 font-mono text-sm">
-                            <div className="opacity-50 line-through decoration-red-500/50 decoration-2 text-gray-400">
-                                "Продам квартиру. Ремонт норм. Рядом магазин."
-                            </div>
-                            <div className="text-green-400 typing-effect">
-                                "Просторная евро-двушка с дизайнерским ремонтом в стиле лофт..."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </Section>
-
       {/* Useful in Blog - Standardized */}
       <Section title="Полезное в блоге">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {RELEVANT_POSTS.map((art, i) => (
                   <Link key={i} to={`/blog/${art.id}`} className="block h-full group cursor-pointer">
-                    <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-purple-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-sm">
-                                <FileText size={24} />
+                    <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                        <div>
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-sm">
+                                    <FileText size={24} />
+                                </div>
+                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-lg">
+                                    Статья
+                                </div>
                             </div>
-                            <div className="text-xs font-bold text-gray-300 uppercase tracking-widest">
-                                Статья
-                            </div>
+                            <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">{art.title}</h3>
+                            <p className="text-gray-500 text-sm mb-4 line-clamp-3">
+                                {art.excerpt}
+                            </p>
                         </div>
-                        <h3 className="font-bold text-lg mb-2 group-hover:text-purple-600 transition-colors">{art.title}</h3>
-                        <p className="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">{art.excerpt}</p>
-                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                            Читать <ArrowRight size={14}/>
-                        </div>
-                    </GlassCard>
+                    </div>
                   </Link>
               ))}
           </div>
@@ -218,6 +202,10 @@ const Sell: React.FC = () => {
       <Section id="form" className="pb-32">
           <LeadForm title="Запишитесь на бесплатную оценку" subtitle="Узнайте реальную стоимость вашей квартиры уже сегодня." buttonText="Вызвать оценщика" />
       </Section>
+
+      <Modal isOpen={isLeadFormOpen} onClose={() => setIsLeadFormOpen(false)} title="Оставить заявку">
+        <LeadForm embedded={true} />
+      </Modal>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ArrowRight, PlayCircle, CheckCircle, Smartphone, Star, ArrowUpRight, MapPin, ChevronLeft, ChevronRight, Key, Wallet, Building2, Repeat, PenTool, Percent, Sun, BarChart3, Camera, ShieldCheck, Sparkles, BrainCircuit, Hammer } from 'lucide-react';
+import { ArrowRight, PlayCircle, CheckCircle, Smartphone, Star, ArrowUpRight, MapPin, ChevronLeft, ChevronRight, Key, Wallet, Building2, Repeat, PenTool, Percent, Sun, BarChart3, Camera, ShieldCheck, Sparkles, BrainCircuit, Hammer, Calculator, TrendingUp } from 'lucide-react';
 import Section from '../components/Section';
 import PropertyModal from '../components/PropertyModal';
 import QuizModal from '../components/QuizModal';
@@ -8,11 +8,13 @@ import LeadForm from '../components/LeadForm';
 import FAQ from '../components/FAQ';
 import ReviewsSection from '../components/ReviewsSection';
 import ComparisonBlock from '../components/ComparisonBlock';
+import AIHeroCarousel from '../components/AIHeroCarousel';
 import { Link } from 'react-router-dom';
 import { Property } from '../types';
 import SEO from '../components/SEO';
 import { PAGE_CONTENT } from '../services/contentData';
 import Modal from '../components/Modal';
+import { SchemaMarkup } from '../components/SchemaMarkup';
 
 // --- Mock Data ---
 const MOCK_PROPERTIES: Property[] = [
@@ -104,9 +106,26 @@ const Home: React.FC = () => {
     }
   };
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Estate AI",
+    "image": "https://estate-ai.com/logo.png",
+    "description": "Экосистема недвижимости: покупка, продажа, аренда и AI-аналитика.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Пресненская наб., 12",
+      "addressLocality": "Москва",
+      "addressCountry": "RU"
+    },
+    "telephone": "+74950000000",
+    "priceRange": "$$"
+  };
+
   return (
     <div className="pt-2 xl:pt-20 overflow-hidden">
       <SEO {...PAGE_CONTENT.HOME.seo} />
+      <SchemaMarkup schema={schemaData} />
 
       {/* 1. Hero Section */}
       <div className="relative min-h-[80vh] flex flex-col items-center justify-center px-4 pb-12 md:pb-20">
@@ -231,106 +250,8 @@ const Home: React.FC = () => {
         </div>
       </Section>
 
-      {/* 4. AI Ecosystem (BENTO GRID) */}
-      <Section title="Технологии Estate AI" subtitle="Нейросети для умных сделок.">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 h-auto md:h-[600px]">
-            
-            {/* HERO CARD: Smart Match */}
-            <Link to="/ai/smart-match" className="md:col-span-2 md:row-span-2 group relative rounded-[2.5rem] overflow-hidden apple-glass-dark hover:scale-[1.01] transition-all duration-500 shadow-2xl border border-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 to-purple-900/40 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-600/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 animate-pulse-slow"></div>
-                
-                <div className="relative z-10 p-8 md:p-12 h-full flex flex-col justify-between">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 text-[10px] font-bold tracking-widest uppercase bg-white/10 backdrop-blur mb-6">
-                            <BrainCircuit size={10} className="text-purple-400" /> Smart Match
-                        </div>
-                        <h3 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">Умный подбор <br/> недвижимости</h3>
-                        <p className="text-gray-400 text-lg md:text-xl max-w-md leading-relaxed">
-                            10 вопросов, чтобы найти идеальный дом. Нейросеть анализирует ваш образ жизни и находит то, что скрыто в фильтрах.
-                        </p>
-                    </div>
-                    <div className="flex items-center justify-between mt-8">
-                        <div className="flex gap-2">
-                            {['Бюджет', 'Локация', 'Семья'].map(tag => (
-                                <span key={tag} className="px-4 py-2 bg-white/10 rounded-full text-sm font-bold text-white/90 backdrop-blur-sm">{tag}</span>
-                            ))}
-                        </div>
-                        <div className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <ArrowUpRight size={28} />
-                        </div>
-                    </div>
-                </div>
-            </Link>
-
-            {/* TALL CARD: Tenant Check */}
-            <Link to="/ai/tenant-check" className="md:col-span-1 md:row-span-2 group relative rounded-[2.5rem] apple-glass p-8 hover:scale-[1.02] transition-all duration-500 flex flex-col justify-between bg-gradient-to-b from-white/90 to-white/60">
-                <div>
-                    <div className="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        <ShieldCheck size={24} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Проверка жильцов</h3>
-                    <p className="text-sm text-gray-500 font-medium leading-relaxed">Поиск по 15 базам: ФССП, МВД, Суды.</p>
-                </div>
-                <div className="mt-8 space-y-3">
-                    {['Паспорт', 'Розыск', 'Долги', 'Банкротство'].map((check, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 bg-white rounded-xl shadow-sm border border-gray-100">
-                            <span className="text-xs font-bold text-gray-600">{check}</span>
-                            <CheckCircle size={14} className="text-green-500" />
-                        </div>
-                    ))}
-                </div>
-            </Link>
-
-            {/* WIDE BOTTOM ROW */}
-            <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                
-                {/* Renovation */}
-                <Link to="/ai/renovation-est" className="group relative rounded-[2.5rem] apple-glass p-6 hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between h-48">
-                    <div className="flex justify-between items-start">
-                        <div className="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center">
-                            <Hammer size={20} />
-                        </div>
-                        <ArrowUpRight className="text-gray-300 group-hover:text-black transition-colors" size={20}/>
-                    </div>
-                    <div>
-                        <h4 className="text-lg font-bold text-gray-900">AI Смета</h4>
-                        <p className="text-xs text-gray-500 mt-1 font-medium">Расчет ремонта по фото</p>
-                    </div>
-                </Link>
-
-                {/* Eco Scan */}
-                <Link to="/ai/eco-scan" className="group relative rounded-[2.5rem] apple-glass p-6 hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between h-48 overflow-hidden">
-                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-400 via-transparent to-transparent"></div>
-                    <div className="flex justify-between items-start relative z-10">
-                        <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
-                            <Sun size={20} />
-                        </div>
-                        <ArrowUpRight className="text-gray-300 group-hover:text-black transition-colors" size={20}/>
-                    </div>
-                    <div className="relative z-10">
-                        <h4 className="text-lg font-bold text-gray-900">Эко-сканер</h4>
-                        <p className="text-xs text-gray-500 mt-1 font-medium">Радиация и воздух</p>
-                    </div>
-                </Link>
-
-                {/* Generator */}
-                <Link to="/ai-generator" className="group relative rounded-[2.5rem] apple-glass p-6 hover:scale-[1.02] transition-all duration-300 flex flex-col justify-between h-48">
-                    <div className="flex justify-between items-start">
-                        <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
-                            <PenTool size={20} />
-                        </div>
-                        <ArrowUpRight className="text-gray-300 group-hover:text-black transition-colors" size={20}/>
-                    </div>
-                    <div>
-                        <h4 className="text-lg font-bold text-gray-900">Генератор описаний</h4>
-                        <p className="text-xs text-gray-500 mt-1 font-medium">Текст объявления за 5 сек</p>
-                    </div>
-                </Link>
-
-            </div>
-        </div>
-      </Section>
+      {/* 4. AI Ecosystem (Carousel) */}
+      <AIHeroCarousel />
 
       <ComparisonBlock items={PAGE_CONTENT.HOME.comparison} theme="blue" />
 
@@ -375,7 +296,6 @@ const Home: React.FC = () => {
                 ref={hotScrollRef}
                 onScroll={handleScroll}
                 className="flex w-full h-full overflow-x-auto snap-x snap-mandatory hide-scrollbar"
-                // Note: removed scroll-behavior: smooth to fix teleportation glitches
              >
                  {extendedHotProperties.map((prop, index) => (
                      <div key={`${prop.id}-${index}`} className="min-w-full w-full h-full flex-shrink-0 snap-center relative">

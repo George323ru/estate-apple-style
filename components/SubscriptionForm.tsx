@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import GlassCard from './GlassCard';
 import { Mail, Check, ArrowRight } from 'lucide-react';
 
 const SubscriptionForm: React.FC = () => {
@@ -17,36 +16,42 @@ const SubscriptionForm: React.FC = () => {
   };
 
   return (
-    <GlassCard className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none p-8 md:p-12 mx-2 my-6 shadow-2xl">
-      <div className="flex flex-col md:flex-row gap-8 items-center justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-4">
-            <Mail className="text-blue-200" size={32} />
-            <h3 className="text-2xl font-bold">Подпишитесь на рассылку</h3>
-          </div>
-          <p className="text-blue-100 text-lg">
-            Получайте аналитику рынка, закрытые старты продаж и советы экспертов первыми. Никакого спама.
-          </p>
+    <div className="relative w-full overflow-hidden rounded-[2rem] bg-[#007AFF] p-6 md:p-8 text-white shadow-xl transition-transform hover:scale-[1.005] duration-300">
+        {/* Decorative Ambience */}
+        <div className="absolute top-[-50%] right-[-10%] w-64 h-64 bg-white/20 rounded-full blur-[60px] pointer-events-none"></div>
+        <div className="absolute bottom-[-50%] left-[-10%] w-64 h-64 bg-purple-500/30 rounded-full blur-[60px] pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1 flex items-center gap-4 text-center md:text-left">
+                <div className="hidden md:flex w-12 h-12 rounded-xl bg-white/20 items-center justify-center backdrop-blur-sm shadow-inner border border-white/10 flex-shrink-0">
+                    <Mail size={24} className="text-white" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-bold leading-tight mb-1">Подпишитесь на рассылку</h3>
+                    <p className="text-blue-50 text-sm font-medium opacity-90 leading-relaxed">
+                        Аналитика рынка и закрытые старты продаж. Без спама.
+                    </p>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubscribe} className="w-full md:w-auto md:min-w-[350px] relative group">
+                <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Ваш email" 
+                    className="w-full h-12 pl-5 pr-14 rounded-full bg-white/10 backdrop-blur-md border border-white/30 text-white placeholder-blue-100 outline-none focus:bg-white/20 focus:border-white/50 transition-all text-sm font-medium shadow-inner"
+                    required
+                />
+                <button 
+                    type="submit" 
+                    className={`absolute right-1.5 top-1.5 bottom-1.5 aspect-square rounded-full flex items-center justify-center transition-all shadow-sm ${subscribed ? 'bg-green-400 text-white' : 'bg-white text-[#007AFF] hover:scale-105 active:scale-95'}`}
+                >
+                    {subscribed ? <Check size={18} /> : <ArrowRight size={18} />}
+                </button>
+            </form>
         </div>
-        
-        <form onSubmit={handleSubscribe} className="flex-1 w-full max-w-md relative">
-          <input 
-            type="email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Ваш email" 
-            className="w-full p-4 pr-16 rounded-full text-gray-900 outline-none focus:ring-4 focus:ring-blue-300/50 transition-all shadow-lg"
-            required
-          />
-          <button 
-            type="submit"
-            className={`absolute right-2 top-2 bottom-2 rounded-full px-4 flex items-center justify-center transition-all duration-300 ${subscribed ? 'bg-green-500 text-white w-12' : 'bg-black text-white w-12 hover:w-16 hover:bg-gray-800'}`}
-          >
-            {subscribed ? <Check size={20} /> : <ArrowRight size={20} />}
-          </button>
-        </form>
-      </div>
-    </GlassCard>
+    </div>
   );
 };
 

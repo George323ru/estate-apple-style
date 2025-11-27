@@ -24,6 +24,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
 }) => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
+  const [message, setMessage] = useState('');
   const [privacyAccepted, setPrivacyAccepted] = useState(true);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -55,7 +56,8 @@ const LeadForm: React.FC<LeadFormProps> = ({
             phone,
             name,
             source: embedded ? 'lead_form_embedded' : 'lead_form_section',
-            journey: journey
+            journey: journey,
+            metadata: { message }
         });
 
         setSubmitted(true);
@@ -124,6 +126,12 @@ const LeadForm: React.FC<LeadFormProps> = ({
                   onChange={(e) => { setPhone(e.target.value); setError(null); }}
                   placeholder="+7 (999) 000-00-00" 
                   className={`w-full p-5 rounded-2xl apple-input font-medium text-lg placeholder-gray-400 focus:scale-[1.01] transition-all ${error ? 'ring-2 ring-red-100 bg-red-50' : ''}`}
+                />
+                <textarea 
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Ваш комментарий (необязательно)" 
+                  className="w-full p-5 rounded-2xl apple-input font-medium text-lg placeholder-gray-400 focus:scale-[1.01] transition-all min-h-[120px] resize-none" 
                 />
               </div>
               

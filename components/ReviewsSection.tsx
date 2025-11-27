@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Section from './Section';
 import GlassCard from './GlassCard';
 import ReviewModal from './ReviewModal';
@@ -11,8 +11,12 @@ interface ReviewsSectionProps {
   title?: string;
 }
 
-const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, title = "Отзывы клиентов" }) => {
+const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews = [], title = "Отзывы клиентов" }) => {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+
+  if (!reviews || reviews.length === 0) {
+      return null;
+  }
 
   return (
     <Section title={title} className="overflow-hidden py-12 md:py-24">
@@ -57,11 +61,11 @@ const ReviewRow: React.FC<ReviewRowProps> = ({ reviews, direction, speed, onRevi
     const [isPaused, setIsPaused] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Triple the data to create a buffer for infinite scrolling
-    const loopReviews = [...reviews, ...reviews, ...reviews];
+    // Triple the data to create a buffer for infinite scrolling - Memoize
+    const loopReviews = useMemo(() => [...reviews, ...reviews, ...reviews], [reviews]);
 
-    // Initial Positioning
-    useLayoutEffect(() => {
+    // Initial Positioning - Use useEffect to be safe
+    useEffect(() => {
         const initScroll = () => {
             if (scrollRef.current) {
                 const scrollWidth = scrollRef.current.scrollWidth;
@@ -73,25 +77,30 @@ const ReviewRow: React.FC<ReviewRowProps> = ({ reviews, direction, speed, onRevi
             }
         };
 
-        // Attempt to set position immediately and after a short delay to ensure layout is ready
-        initScroll();
-        const timer = setTimeout(initScroll, 50);
+        // Attempt to set position
+        const timer = setTimeout(initScroll, 100);
         return () => clearTimeout(timer);
-    }, [reviews]);
+    }, [loopReviews]);
 
     // Infinite Loop Logic (Teleportation)
     const handleScroll = () => {
         if (!scrollRef.current) return;
         
-        const scrollLeft = scrollRef.current.scrollLeft;
-        const scrollWidth = scrollRef.current.scrollWidth;
-        const singleSetWidth = scrollWidth / 3;
+        try {
+            const scrollLeft = scrollRef.current.scrollLeft;
+            const scrollWidth = scrollRef.current.scrollWidth;
+            const singleSetWidth = scrollWidth / 3;
 
-        // Teleport when hitting boundaries to create seamless loop
-        if (scrollLeft >= singleSetWidth * 2) {
-            scrollRef.current.scrollLeft -= singleSetWidth;
-        } else if (scrollLeft <= 0) {
-            scrollRef.current.scrollLeft += singleSetWidth;
+            if (singleSetWidth <= 0) return;
+
+            // Teleport when hitting boundaries to create seamless loop
+            if (scrollLeft >= singleSetWidth * 2) {
+                scrollRef.current.scrollLeft -= singleSetWidth;
+            } else if (scrollLeft <= 0) {
+                scrollRef.current.scrollLeft += singleSetWidth;
+            }
+        } catch (e) {
+            // ignore scroll errors
         }
     };
 
@@ -125,7 +134,7 @@ const ReviewRow: React.FC<ReviewRowProps> = ({ reviews, direction, speed, onRevi
             onTouchStart={handleManualInteract}
             onTouchEnd={handleManualEnd}
             onWheel={handleManualInteract}
-            onMouseLeave={handleManualEnd} // Resume if mouse leaves the entire container
+            onMouseLeave={handleManualEnd}
             className="flex overflow-x-auto gap-6 pt-4 pb-14 px-8 hide-scrollbar items-stretch"
             style={{ cursor: 'grab', WebkitOverflowScrolling: 'touch' }}
         >
@@ -135,7 +144,7 @@ const ReviewRow: React.FC<ReviewRowProps> = ({ reviews, direction, speed, onRevi
                     className="flex-shrink-0"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={(e) => {
-                        e.stopPropagation(); // Prevent bubbling
+                        e.stopPropagation();
                         setIsPaused(false);
                     }}
                 >
@@ -151,7 +160,6 @@ const ReviewRow: React.FC<ReviewRowProps> = ({ reviews, direction, speed, onRevi
 };
 
 const ReviewCard: React.FC<{ review: Review; index: number; onClick: () => void }> = ({ review, index, onClick }) => {
-    // 20% chance of 4.5 stars (Every 5th item based on index)
     const isFourPointFive = index % 5 === 4;
 
     return (

@@ -10,25 +10,45 @@ import Modal from '../components/Modal';
 import ComparisonBlock from '../components/ComparisonBlock';
 import ExpertsSection from '../components/ExpertsSection';
 import ProcessTimeline from '../components/ProcessTimeline';
-import { CheckCircle2, FileText, ArrowRight, ShieldCheck, ScanEye, UserCheck, CreditCard, UserX, Search, Gavel, Siren, Wallet, Smartphone } from 'lucide-react';
+import AIHeroCarousel from '../components/AIHeroCarousel';
+import { CheckCircle2, FileText, ArrowRight, ShieldCheck, ScanEye, UserCheck, CreditCard, UserX, Search, Gavel, Siren, Wallet, Smartphone, TrendingUp, Hammer, MessageCircle, Shield, Sparkles, ClipboardList } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PAGE_CONTENT } from '../services/contentData';
 import { BLOG_POSTS } from '../services/blogData';
+import { SchemaMarkup } from '../components/SchemaMarkup';
 
-const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('rent-')).slice(0, 3);
+const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('rent-')).slice(0, 6);
 
 const RentOut: React.FC = () => {
   const [isTariffModalOpen, setIsTariffModalOpen] = useState(false);
   const [selectedTariff, setSelectedTariff] = useState('');
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 
   const openTariffModal = (tariff: string) => {
       setSelectedTariff(tariff);
       setIsTariffModalOpen(true);
   };
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Сдача и управление недвижимостью",
+    "description": PAGE_CONTENT.RENT.seo.description,
+    "provider": {
+        "@type": "RealEstateAgent",
+        "name": "Estate AI"
+    },
+    "areaServed": "RU"
+  };
+
   return (
     <div className="pt-4 xl:pt-20">
-      <SEO {...PAGE_CONTENT.RENT.seo} />
+      <SEO 
+        title="Сдать квартиру в Москве | Управление и Страховка | Estate AI" 
+        description={PAGE_CONTENT.RENT.seo.description}
+        keywords={PAGE_CONTENT.RENT.seo.keywords}
+      />
+      <SchemaMarkup schema={schemaData} />
       
       <Section className="text-center relative min-h-[70vh] flex flex-col items-center justify-center">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -46,8 +66,12 @@ const RentOut: React.FC = () => {
              {PAGE_CONTENT.RENT.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={() => document.getElementById('form')?.scrollIntoView({behavior: 'smooth'})} className="px-10 py-5 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform shadow-lg text-lg">
-              Сдать квартиру
+            {/* HEADER CONVERSION BUTTON - SERVICE */}
+            <button 
+                onClick={() => setIsLeadFormOpen(true)}
+                className="px-10 py-5 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform shadow-lg text-lg flex items-center justify-center gap-2"
+            >
+              <MessageCircle size={20} /> Оставить заявку
             </button>
           </div>
         </div>
@@ -80,37 +104,40 @@ const RentOut: React.FC = () => {
 
       <ComparisonBlock items={PAGE_CONTENT.RENT.comparison} theme="green" title="В чем разница?" />
 
+      {/* Why Choose Us for Renting */}
+      <Section title="Почему мы?">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+                { icon: <Wallet size={24} />, title: "Пассивный доход", desc: "Сдача через УК освобождает время. Мы берем на себя все заботы.", color: "bg-green-100 text-green-600", link: "/blog/rent-1" },
+                { icon: <Shield size={24} />, title: "Страховка", desc: "Полная защита от ущерба, пожара и потопа на 1.5 млн рублей.", color: "bg-blue-100 text-blue-600", link: "/blog/rent-2" },
+                { icon: <UserCheck size={24} />, title: "Проверка", desc: "Фейс-контроль жильцов по базам МВД и ФССП. Только надежные арендаторы.", color: "bg-indigo-100 text-indigo-600", link: "/blog/rent-3" },
+                { icon: <FileText size={24} />, title: "Договор", desc: "Грамотно составленный договор защищает вас от неплатежей и порчи имущества.", color: "bg-purple-100 text-purple-600", link: "/blog/rent-4" },
+                { icon: <ClipboardList size={24} />, title: "Опись", desc: "Фиксируем каждый предмет мебели и техники, чтобы избежать споров при выезде.", color: "bg-orange-100 text-orange-600", link: "/blog/rent-5" },
+                { icon: <Gavel size={24} />, title: "Решение споров", desc: "Берем на себя переговоры с соседями и жильцами в конфликтных ситуациях.", color: "bg-red-100 text-red-600", link: "/blog/rent-6" }
+            ].map((item, i) => (
+                <Link key={i} to={item.link} className="block h-full group cursor-pointer">
+                    <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                        <div>
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${item.color} group-hover:bg-black group-hover:text-white transition-colors`}>
+                                {item.icon}
+                            </div>
+                            <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition-colors">{item.title}</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
+                                {item.desc}
+                            </p>
+                        </div>
+                    </div>
+                </Link>
+            ))}
+        </div>
+      </Section>
+
       <Section title="Как мы работаем">
           <ProcessTimeline steps={PAGE_CONTENT.RENT.timeline} colorTheme="green" />
       </Section>
 
-      {/* Our Tools - Standardized */}
-      <Section title="Наши инструменты">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                  { id: 'tool-scoring', icon: <UserCheck/>, title: "Скоринг жильцов", desc: "Проверка по 15 базам данных (МВД, ФССП)." },
-                  { id: 'tool-insurance', icon: <ShieldCheck/>, title: "Страхование", desc: "Защита ремонта и ответственности перед соседями." },
-                  { id: 'rent-6', icon: <Smartphone/>, title: "Приложение", desc: "Контроль оплат, чеков и фотоотчетов в телефоне." }
-              ].map((tool, i) => (
-                  <Link key={i} to={`/blog/${tool.id}`} className="block h-full group cursor-pointer">
-                      <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-green-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                          <div className="flex justify-between items-start mb-6">
-                              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-100 text-green-600 group-hover:bg-black group-hover:text-white transition-colors shadow-sm">
-                                  {React.cloneElement(tool.icon as any, { size: 24 })}
-                              </div>
-                          </div>
-                          <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition-colors">{tool.title}</h3>
-                          <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
-                              {tool.desc}
-                          </p>
-                          <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                              Подробнее <ArrowRight size={14} />
-                          </div>
-                      </GlassCard>
-                  </Link>
-              ))}
-          </div>
-      </Section>
+      {/* AI TOOLS HERO BLOCK - CAROUSEL */}
+      <AIHeroCarousel />
 
       {/* Management Packages - Standardized */}
       <Section title="Тарифы">
@@ -159,51 +186,27 @@ const RentOut: React.FC = () => {
 
       <ExpertsSection title="Управляющие объектами" colorTheme="green" />
 
-      {/* AI Tech Teaser (Keep unique) */}
-      <Section>
-        <div className="apple-glass-dark relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 border border-white/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] group">
-            <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="space-y-8">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 text-xs font-bold tracking-widest uppercase bg-white/5 backdrop-blur mb-4 text-green-300">
-                            <ScanEye size={12} /> Tenant Face Control
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight leading-tight">
-                            Сдавайте только <br/>
-                            надежным
-                        </h2>
-                        <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-                            Никаких "котов в мешке". Наш AI проверяет потенциального арендатора по 15 базам данных.
-                        </p>
-                    </div>
-                    <Link to="/ai/tenant-check" className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-500 text-white px-8 py-4 rounded-full font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-green-900/50">
-                        Проверить человека <UserCheck size={20} />
-                    </Link>
-                </div>
-            </div>
-        </div>
-      </Section>
-
       {/* Useful in Blog - Standardized */}
       <Section title="Полезное в блоге">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {RELEVANT_POSTS.map((art, i) => (
                   <Link key={i} to={`/blog/${art.id}`} className="block h-full group cursor-pointer">
-                    <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-green-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors shadow-sm">
-                                <FileText size={24} />
+                    <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                        <div>
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors shadow-sm">
+                                    <FileText size={24} />
+                                </div>
+                                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-lg">
+                                    Статья
+                                </div>
                             </div>
-                            <div className="text-xs font-bold text-gray-300 uppercase tracking-widest">
-                                Статья
-                            </div>
+                            <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition-colors">{art.title}</h3>
+                            <p className="text-gray-500 text-sm mb-4 line-clamp-3">
+                                {art.excerpt}
+                            </p>
                         </div>
-                        <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition-colors">{art.title}</h3>
-                        <p className="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">{art.excerpt}</p>
-                        <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                            Читать <ArrowRight size={14}/>
-                        </div>
-                    </GlassCard>
+                    </div>
                   </Link>
               ))}
           </div>
@@ -221,6 +224,10 @@ const RentOut: React.FC = () => {
 
       <Modal isOpen={isTariffModalOpen} onClose={() => setIsTariffModalOpen(false)} title={selectedTariff}>
           <LeadForm title="Оставьте заявку" subtitle={`Менеджер свяжется для обсуждения условий по тарифу "${selectedTariff}"`} className="p-0" embedded={true} />
+      </Modal>
+
+      <Modal isOpen={isLeadFormOpen} onClose={() => setIsLeadFormOpen(false)} title="Оставить заявку">
+        <LeadForm embedded={true} />
       </Modal>
     </div>
   );

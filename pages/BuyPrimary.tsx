@@ -9,11 +9,14 @@ import ComparisonBlock from '../components/ComparisonBlock';
 import ExpertsSection from '../components/ExpertsSection';
 import ProcessTimeline from '../components/ProcessTimeline';
 import FAQ from '../components/FAQ';
+import AIHeroCarousel from '../components/AIHeroCarousel';
 import { Property } from '../types';
 import { PAGE_CONTENT } from '../services/contentData';
-import { Maximize, Coins, BrainCircuit, Ruler, ShieldCheck, Search, MapPin, ChevronDown, ArrowRight, FileText } from 'lucide-react';
+import { Maximize, Coins, BrainCircuit, Ruler, ShieldCheck, Search, MapPin, ChevronDown, ArrowRight, FileText, TrendingUp, Sun, Leaf, Layout, DollarSign, Sparkles, Map, Shield, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BLOG_POSTS } from '../services/blogData';
+import { SchemaMarkup } from '../components/SchemaMarkup';
+import Modal from '../components/Modal';
 
 // --- MOCK DATA ---
 const MOCK_PROPERTIES: Property[] = [
@@ -33,7 +36,7 @@ const DISTRICTS: Record<string, string[]> = {
     "Екатеринбург": ["Центр", "Уралмаш", "Академический"]
 };
 
-const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('buy-new-')).slice(0, 3);
+const RELEVANT_POSTS = BLOG_POSTS.filter(p => p.id.startsWith('buy-new-')).slice(0, 6);
 
 const BuyPrimary: React.FC = () => {
     // Filter State
@@ -54,6 +57,7 @@ const BuyPrimary: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     
     const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+    const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 
     const toggleRoom = (room: string) => {
         setSelectedRooms(prev => prev.includes(room) ? prev.filter(r => r !== room) : [...prev, room]);
@@ -97,21 +101,52 @@ const BuyPrimary: React.FC = () => {
     const showPlotInputs = selectedType === 'house' || selectedType === 'land';
     const showAreaInputs = selectedType !== 'land' && selectedType !== 'parking';
 
+    const schemaData = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Подбор новостройки",
+        "description": PAGE_CONTENT.BUY_PRIMARY.seo.description,
+        "brand": {
+            "@type": "Brand",
+            "name": "Estate AI"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "RUB",
+            "availability": "https://schema.org/InStock"
+        }
+    };
+
     return (
         <div className="pt-24 min-h-screen">
-             <SEO {...PAGE_CONTENT.BUY_PRIMARY.seo} />
+             <SEO 
+                title="Купить новостройку в Москве | Цены от застройщика | Estate AI" 
+                description={PAGE_CONTENT.BUY_PRIMARY.seo.description}
+                keywords={PAGE_CONTENT.BUY_PRIMARY.seo.keywords}
+             />
+             <SchemaMarkup schema={schemaData} />
 
              <Section className="py-8">
                 <div className="mb-8 text-center">
                     <span className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-sm mb-4">{PAGE_CONTENT.BUY_PRIMARY.hero.badge}</span>
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{PAGE_CONTENT.BUY_PRIMARY.hero.title}</h1>
-                    <p className="text-xl text-gray-500 max-w-2xl mx-auto">
+                    <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-8">
                         {PAGE_CONTENT.BUY_PRIMARY.hero.subtitle}
                     </p>
+                    {/* HEADER CONVERSION BUTTON - SERVICE */}
+                    <button 
+                        onClick={() => setIsLeadFormOpen(true)}
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform shadow-lg text-lg"
+                    >
+                        <Search size={20} />
+                        Подобрать объект
+                    </button>
                 </div>
 
                 {/* --- FILTERS --- */}
-                <GlassCard className="mb-12 sticky top-2 lg:top-24 z-30 p-6 border border-blue-100 shadow-xl bg-white/90 backdrop-blur-xl">
+                {/* Mobile: relative (scrolls). Tablet/Desktop (md+): sticky (fixes) */}
+                <GlassCard className="mb-12 relative md:sticky md:top-24 z-30 p-6 border border-blue-100 shadow-xl bg-white/90 backdrop-blur-xl">
                     <div className="flex flex-col gap-4">
                         
                         {/* Row 1: Type Selector */}
@@ -262,41 +297,41 @@ const BuyPrimary: React.FC = () => {
 
              <PropertyModal property={selectedProperty} onClose={() => setSelectedProperty(null)} />
 
+             {/* AI TOOLS HERO BLOCK - CAROUSEL */}
+             <AIHeroCarousel />
+
+             <Section title="Почему выбирают новостройки?">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {[
+                        { icon: <TrendingUp size={24} />, title: "Инвестиции", desc: "Покупка на этапе котлована — классическая инвестиция с высоким потенциалом роста.", color: "bg-blue-100 text-blue-600", link: "/blog/buy-new-3" },
+                        { icon: <Layout size={24} />, title: "Планировки", desc: "Евроформат, мастер-спальни и постирочные. Современные стандарты жизни.", color: "bg-purple-100 text-purple-600", link: "/blog/buy-new-1" },
+                        { icon: <DollarSign size={24} />, title: "Ипотека", desc: "Госпрограммы и субсидированные ставки от 0.1% делают платеж комфортным.", color: "bg-green-100 text-green-600", link: "/blog/buy-new-2" },
+                        { icon: <Map size={24} />, title: "Инфраструктура", desc: "Современные ЖК строятся по принципу 'город в городе' со школами и парками.", color: "bg-orange-100 text-orange-600", link: "/blog/buy-new-4" },
+                        { icon: <Shield size={24} />, title: "Безопасность", desc: "Эскроу-счета гарантируют сохранность ваших средств до получения ключей.", color: "bg-indigo-100 text-indigo-600", link: "/blog/buy-new-5" },
+                        { icon: <Clock size={24} />, title: "Рассрочка", desc: "Гибкие условия оплаты от застройщиков: платите частями без переплат.", color: "bg-pink-100 text-pink-600", link: "/blog/buy-new-6" }
+                    ].map((item, i) => (
+                        <Link key={i} to={item.link} className="block h-full group cursor-pointer">
+                            <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                                <div>
+                                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 ${item.color} group-hover:bg-black group-hover:text-white transition-colors`}>
+                                        {item.icon}
+                                    </div>
+                                    <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">{item.title}</h3>
+                                    <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-3">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+             </Section>
+
              <ComparisonBlock items={PAGE_CONTENT.BUY_PRIMARY.comparison} theme="blue" />
 
              {/* Process Timeline */}
              <Section title="Как мы работаем">
                 <ProcessTimeline steps={PAGE_CONTENT.BUY_PRIMARY.timeline} colorTheme="blue" />
-             </Section>
-
-             {/* Our Tools - Standardized */}
-             <Section title="Наши инструменты">
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                     {[
-                         { id: 'tool-ai-match', icon: <BrainCircuit/>, title: "AI Подбор", desc: "Нейросеть анализирует 500+ ЖК и находит лучшие лоты." },
-                         { id: 'tool-mortgage', icon: <Coins/>, title: "Ипотечный брокер", desc: "Одобряем сложные случаи и субсидированные ставки." },
-                         { id: 'tool-laser', icon: <Ruler/>, title: "Лазерная приемка", desc: "Инженер с оборудованием проверяет квартиру при выдаче ключей." }
-                     ].map((tool, i) => (
-                         <Link key={i} to={`/blog/${tool.id}`} className="block h-full group cursor-pointer">
-                             <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-blue-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                                 <div className="flex justify-between items-start mb-6">
-                                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-100 text-blue-600 group-hover:bg-black group-hover:text-white transition-colors shadow-sm">
-                                         {React.cloneElement(tool.icon as any, { size: 24 })}
-                                     </div>
-                                 </div>
-                                 
-                                 <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">{tool.title}</h3>
-                                 <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
-                                     {tool.desc}
-                                 </p>
-                                 
-                                 <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                                     Подробнее <ArrowRight size={14} />
-                                 </div>
-                             </GlassCard>
-                         </Link>
-                     ))}
-                 </div>
              </Section>
 
              {/* Packages - Standardized */}
@@ -342,26 +377,27 @@ const BuyPrimary: React.FC = () => {
                 ]}
              />
 
-             {/* Useful in Blog */}
+             {/* Useful in Blog - COMPACT 3 COLUMNS */}
              <Section title="Полезное в блоге">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {RELEVANT_POSTS.map((art, i) => (
                           <Link key={i} to={`/blog/${art.id}`} className="block h-full group cursor-pointer">
-                            <GlassCard className="h-full flex flex-col p-6 hover:scale-[1.02] transition-transform duration-300 border border-blue-100 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
-                                        <FileText size={24} />
+                            <div className="apple-panel p-6 h-full flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                                <div>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
+                                            <FileText size={24} />
+                                        </div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-1 rounded-lg">
+                                            Статья
+                                        </div>
                                     </div>
-                                    <div className="text-xs font-bold text-gray-300 uppercase tracking-widest">
-                                        Статья
-                                    </div>
+                                    <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">{art.title}</h3>
+                                    <p className="text-gray-500 text-sm mb-4 line-clamp-3">
+                                        {art.excerpt}
+                                    </p>
                                 </div>
-                                <h3 className="font-bold text-lg mb-2 group-hover:text-blue-600 transition-colors">{art.title}</h3>
-                                <p className="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">{art.excerpt}</p>
-                                <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-black transition-colors mt-auto border-t border-gray-100 pt-4">
-                                    Читать <ArrowRight size={14}/>
-                                </div>
-                            </GlassCard>
+                            </div>
                           </Link>
                       ))}
                   </div>
@@ -374,6 +410,10 @@ const BuyPrimary: React.FC = () => {
              <Section id="form" className="pb-32">
                  <LeadForm title="Не нашли нужный вариант?" subtitle="Оставьте заявку, мы подберем из закрытой базы (2500+ объектов)." buttonText="Подобрать квартиру" />
              </Section>
+
+             <Modal isOpen={isLeadFormOpen} onClose={() => setIsLeadFormOpen(false)} title="Подобрать объект">
+                <LeadForm embedded={true} />
+             </Modal>
         </div>
     );
 };
