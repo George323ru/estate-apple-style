@@ -319,12 +319,28 @@ export const generateStagedRenovation = async (base64Image: string): Promise<str
 };
 
 // --- CONFIGURATION ---
+const chatProvider = process.env.VITE_AI_CHAT_PROVIDER || 'gemini';
+const textProvider = process.env.VITE_AI_TEXT_PROVIDER || 'gemini';
+
 const AI_CONFIG = {
-  chatProvider: process.env.VITE_AI_CHAT_PROVIDER || 'gemini',
-  chatModel: process.env.VITE_AI_CHAT_MODEL || 'gemini-2.5-flash',
-  textProvider: process.env.VITE_AI_TEXT_PROVIDER || 'gemini',
-  textModel: process.env.VITE_AI_TEXT_MODEL || 'gemini-2.5-flash',
+  chatProvider: chatProvider,
+  chatModel: process.env.VITE_AI_CHAT_MODEL || (chatProvider === 'openrouter' ? 'x-ai/grok-4.1-fast:free' : 'gemini-2.5-flash'),
+  textProvider: textProvider,
+  textModel: process.env.VITE_AI_TEXT_MODEL || (textProvider === 'openrouter' ? 'x-ai/grok-4.1-fast:free' : 'gemini-2.5-flash'),
 };
+
+// --- DEBUG LOGGING ---
+try {
+  console.log("🤖 AI Service Initialized", {
+    chatProvider: AI_CONFIG.chatProvider,
+    chatModel: AI_CONFIG.chatModel,
+    textProvider: AI_CONFIG.textProvider,
+    hasOpenRouterKey: !!process.env.OPENROUTER_API_KEY ? "YES" : "NO",
+    hasGeminiKey: !!process.env.API_KEY ? "YES" : "NO"
+  });
+} catch (e) {
+  console.error("Failed to log AI Config", e);
+}
 
 // --- SYSTEM PROMPT (используется для обоих провайдеров) ---
 const SYSTEM_PROMPT = `Ты - AI-ассистент сайта недвижимости Estate AI. Твоя задача - помогать посетителям найти нужную информацию НА НАШЕМ САЙТЕ.
@@ -416,6 +432,7 @@ export const chatWithOpenRouter = async (
 
 // --- UNIFIED CHAT FUNCTION ---
 export const chatWithAI = async (history: { role: 'user' | 'model', parts: [{ text: string }] }[], message: string) => {
+  console.log(`💬 Chat Request. Provider: ${AI_CONFIG.chatProvider}`);
   if (AI_CONFIG.chatProvider === 'openrouter') {
     // Передаем историю в OpenRouter
     return chatWithOpenRouter(history, message, AI_CONFIG.chatModel);

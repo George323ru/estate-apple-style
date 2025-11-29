@@ -11,13 +11,13 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY),
-      'process.env.VITE_AI_CHAT_PROVIDER': JSON.stringify(env.VITE_AI_CHAT_PROVIDER),
-      'process.env.VITE_AI_CHAT_MODEL': JSON.stringify(env.VITE_AI_CHAT_MODEL),
-      'process.env.VITE_AI_TEXT_PROVIDER': JSON.stringify(env.VITE_AI_TEXT_PROVIDER),
-      'process.env.VITE_AI_TEXT_MODEL': JSON.stringify(env.VITE_AI_TEXT_MODEL)
+      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY || process.env.GEMINI_API_KEY),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || process.env.GEMINI_API_KEY),
+      'process.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY),
+      'process.env.VITE_AI_CHAT_PROVIDER': JSON.stringify(env.VITE_AI_CHAT_PROVIDER || process.env.VITE_AI_CHAT_PROVIDER),
+      'process.env.VITE_AI_CHAT_MODEL': JSON.stringify(env.VITE_AI_CHAT_MODEL || process.env.VITE_AI_CHAT_MODEL),
+      'process.env.VITE_AI_TEXT_PROVIDER': JSON.stringify(env.VITE_AI_TEXT_PROVIDER || process.env.VITE_AI_TEXT_PROVIDER),
+      'process.env.VITE_AI_TEXT_MODEL': JSON.stringify(env.VITE_AI_TEXT_MODEL || process.env.VITE_AI_TEXT_MODEL)
     },
     resolve: {
       alias: {

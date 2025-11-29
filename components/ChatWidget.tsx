@@ -59,6 +59,7 @@ const ChatWidget: React.FC = () => {
       const response = await chatWithAI(history, userMsg);
       setMessages(prev => [...prev, { role: 'model', text: response || "Ошибка." }]);
     } catch (e) {
+      console.error("Chat Widget Error:", e);
       setMessages(prev => [...prev, { role: 'model', text: "Что-то пошло не так, попробуйте позже." }]);
     } finally {
       setLoading(false);
