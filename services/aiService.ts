@@ -121,18 +121,13 @@ export const generateSellingDescription = async (
       const client = getOpenRouterClient();
       if (!client) return "OpenRouter API Key is missing.";
 
-      const messages: any[] = [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: promptText }
-          ]
-        }
-      ];
+      // Construct content array with text prompt
+      const content: any[] = [{ type: "text", text: promptText }];
 
+      // Add images if available
       if (imagesBase64.length > 0) {
         imagesBase64.forEach(img => {
-          messages[0].content.push({
+          content.push({
             type: "image_url",
             image_url: {
               url: `data:image/jpeg;base64,${img}`
@@ -142,14 +137,32 @@ export const generateSellingDescription = async (
       }
 
       try {
+        console.log("🚀 Sending Vision Request to OpenRouter...");
+        console.log("Model:", model);
+        console.log("Content Structure:", JSON.stringify(content.map(c =>
+          c.type === 'image_url' ? { type: 'image_url', url: `DATA_URL_TRUNCATED (${c.image_url.url.length} chars)` } : c
+        ), null, 2));
+
         const completion = await client.chat.completions.create({
           model: model,
-          messages: messages
-        });
+          messages: [
+            {
+              role: "user",
+              content: content
+            }
+          ],
+          reasoning: { enabled: false }
+        } as any);
+
+        console.log("✅ OpenRouter Response:", completion);
         return completion.choices[0].message.content || "Не удалось сгенерировать описание.";
-      } catch (error) {
-        console.error("OpenRouter Text Gen Error:", error);
-        return "Ошибка генерации через OpenRouter. Возможно, модель не поддерживает изображения.";
+      } catch (error: any) {
+        console.error("❌ OpenRouter Vision Error Full:", error);
+        if (error.response) {
+          console.error("Response Data:", error.response.data);
+          console.error("Response Status:", error.response.status);
+        }
+        return `Ошибка API OpenRouter: ${error.message || "Неизвестная ошибка"}`;
       }
     }
 
@@ -237,7 +250,15 @@ export const editImageWithGemini = async (base64Image: string, prompt: string): 
 
 export const generateStagedRenovation = async (base64Image: string): Promise<string> => {
   const apiKey = process.env.API_KEY;
-  if (!apiKey) throw new Error("API Key not found");
+
+  // Если нет ключа Google, проверяем OpenRouter или возвращаем ошибку
+  // Если нет ключа Google или он выглядит как заглушка, проверяем OpenRouter или возвращаем ошибку
+  if (!apiKey || !apiKey.startsWith('AIza')) {
+    console.warn("Gemini API Key is missing or invalid for Image Generation.");
+    // TODO: Implement OpenRouter Image Generation (e.g. Flux) here if needed.
+    // Currently OpenRouter integration is text/vision only.
+    throw new Error("Для генерации изображений (Staging) требуется валидный API ключ Gemini (начинается с AIza...)");
+  }
 
   const ai = new GoogleGenAI({ apiKey });
 
