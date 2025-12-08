@@ -19,7 +19,7 @@ const AdminDashboard: React.FC = () => {
 
     const fetchStats = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const apiUrl = import.meta.env.VITE_API_URL || '';
             const res = await fetch(`${apiUrl}/api/estates`);
             const data = await res.json();
             setStats(data);
@@ -52,7 +52,7 @@ const AdminDashboard: React.FC = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const apiUrl = import.meta.env.VITE_API_URL || '';
 
             const response = await fetch(`${apiUrl}/api/estates/upload`, {
                 method: 'POST',

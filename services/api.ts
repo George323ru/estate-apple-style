@@ -2,19 +2,19 @@
 import { CrmPayload, Property } from '../types';
 
 // This would be your real backend URL in production
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.estate-ai.com/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // Mock delay to simulate network latency
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Helper to manage mock persistence
 const getStoredProjects = () => {
-    try {
-        const stored = localStorage.getItem('estate_projects');
-        return stored ? JSON.parse(stored) : [];
-    } catch {
-        return [];
-    }
+  try {
+    const stored = localStorage.getItem('estate_projects');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
 };
 
 export const api = {
@@ -43,7 +43,7 @@ export const api = {
   fetchDashboard: async (token: string) => {
     console.log(`[API] Fetching dashboard with token: ${token}`);
     await delay(800);
-    
+
     // Get dynamically created projects from "DB"
     const dynamicProjects = getStoredProjects();
 
@@ -76,61 +76,61 @@ export const api = {
    * 2. Creates a Project in the user's dashboard.
    */
   submitSmartMatch: async (answers: Record<string, string>, result: { text: string, primary: Property[], secondary: Property[] }) => {
-      console.log('[API] Processing Smart Match Result...');
-      console.log('--- CRM DATA ---');
-      console.log('User Requirements:', answers);
-      console.log('AI Recommendations:', result.primary.map(p => p.id), result.secondary.map(p => p.id));
-      console.log('----------------');
+    console.log('[API] Processing Smart Match Result...');
+    console.log('--- CRM DATA ---');
+    console.log('User Requirements:', answers);
+    console.log('AI Recommendations:', result.primary.map(p => p.id), result.secondary.map(p => p.id));
+    console.log('----------------');
 
-      await delay(1000);
+    await delay(1000);
 
-      // Create a new Project for the Dashboard
-      // Category is DEAL because it's a purchase process
-      const newProject = {
-          id: `sm-${Date.now()}`,
-          type: 'BUYER',
-          category: 'DEAL', 
-          title: `AI Подбор: ${answers['location'] === 'center' ? 'Центр' : answers['location'] === 'park' ? 'Зеленый район' : 'Москва'}`,
-          subtitle: `Этап: Подборка готова`, // Simplified for pill
-          progress: 20,
-          status: 'Подборка готова',
-          manager: { name: "Ирина В.", role: "Ипотечный брокер", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80" },
-          coreStats: [
-              { label: 'Бюджет', value: answers['budget'] === 'high' ? '25+ млн' : 'до 15 млн' },
-              { label: 'Цель', value: answers['goal'] === 'live_now' ? 'Жить' : 'Инвест' }
-          ],
-          stages: [
-              { id: 0, label: 'Анкета', status: 'completed', stats: [] },
-              { id: 1, label: 'AI Подбор', status: 'current', stats: [{ label: 'Вариантов', value: `${result.primary.length + result.secondary.length}` }] },
-              { id: 2, label: 'Просмотры', status: 'pending', stats: [] },
-              { id: 3, label: 'Сделка', status: 'pending', stats: [] }
-          ],
-          tasks: [
-              {
-                  id: `act-${Date.now()}`,
-                  title: 'Изучить подборку',
-                  desc: 'Нейросеть подобрала объекты под ваши критерии. Изучите отчет.',
-                  type: 'urgent',
-                  actionType: 'REVIEW_AI_SELECTION',
-                  buttonText: 'Смотреть',
-                  isCompleted: false,
-                  date: 'Сегодня',
-                  isViewed: false,
-                  payload: {
-                      aiVerdict: result.text,
-                      properties: [...result.primary, ...result.secondary]
-                  }
-              }
-          ],
-          history: [],
-          documents: []
-      };
+    // Create a new Project for the Dashboard
+    // Category is DEAL because it's a purchase process
+    const newProject = {
+      id: `sm-${Date.now()}`,
+      type: 'BUYER',
+      category: 'DEAL',
+      title: `AI Подбор: ${answers['location'] === 'center' ? 'Центр' : answers['location'] === 'park' ? 'Зеленый район' : 'Москва'}`,
+      subtitle: `Этап: Подборка готова`, // Simplified for pill
+      progress: 20,
+      status: 'Подборка готова',
+      manager: { name: "Ирина В.", role: "Ипотечный брокер", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80" },
+      coreStats: [
+        { label: 'Бюджет', value: answers['budget'] === 'high' ? '25+ млн' : 'до 15 млн' },
+        { label: 'Цель', value: answers['goal'] === 'live_now' ? 'Жить' : 'Инвест' }
+      ],
+      stages: [
+        { id: 0, label: 'Анкета', status: 'completed', stats: [] },
+        { id: 1, label: 'AI Подбор', status: 'current', stats: [{ label: 'Вариантов', value: `${result.primary.length + result.secondary.length}` }] },
+        { id: 2, label: 'Просмотры', status: 'pending', stats: [] },
+        { id: 3, label: 'Сделка', status: 'pending', stats: [] }
+      ],
+      tasks: [
+        {
+          id: `act-${Date.now()}`,
+          title: 'Изучить подборку',
+          desc: 'Нейросеть подобрала объекты под ваши критерии. Изучите отчет.',
+          type: 'urgent',
+          actionType: 'REVIEW_AI_SELECTION',
+          buttonText: 'Смотреть',
+          isCompleted: false,
+          date: 'Сегодня',
+          isViewed: false,
+          payload: {
+            aiVerdict: result.text,
+            properties: [...result.primary, ...result.secondary]
+          }
+        }
+      ],
+      history: [],
+      documents: []
+    };
 
-      // Save to "DB"
-      const currentProjects = getStoredProjects();
-      localStorage.setItem('estate_projects', JSON.stringify([newProject, ...currentProjects]));
+    // Save to "DB"
+    const currentProjects = getStoredProjects();
+    localStorage.setItem('estate_projects', JSON.stringify([newProject, ...currentProjects]));
 
-      return { success: true };
+    return { success: true };
   },
 
   /**
@@ -138,16 +138,16 @@ export const api = {
    */
   updateAction: async (projectId: string, actionId: string, status: 'completed' | 'rejected', payload?: any) => {
     console.log(`[API] Updating action ${actionId} for project ${projectId}`, status, payload);
-    
+
     // Update "DB"
     const projects = getStoredProjects();
     const updated = projects.map((p: any) => {
-        if (p.id === projectId) {
-             // Simplified update logic for mock
-             const newTasks = p.tasks.map((t:any) => t.id === actionId ? {...t, isCompleted: true} : t);
-             return { ...p, tasks: newTasks, progress: Math.min(100, p.progress + 10) };
-        }
-        return p;
+      if (p.id === projectId) {
+        // Simplified update logic for mock
+        const newTasks = p.tasks.map((t: any) => t.id === actionId ? { ...t, isCompleted: true } : t);
+        return { ...p, tasks: newTasks, progress: Math.min(100, p.progress + 10) };
+      }
+      return p;
     });
     localStorage.setItem('estate_projects', JSON.stringify(updated));
 
