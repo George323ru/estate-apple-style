@@ -26,8 +26,9 @@ COPY --from=build-frontend /app/dist ./dist
 # Copy backend source code to /app/backend
 COPY backend ./backend
 
-# Expose the port (Hosting usually sets PORT env var, but we expose 3001 as default)
-EXPOSE 3001
+# Default to port 80 for hosting (standard HTTP port)
+ENV PORT=80
+EXPOSE 80
 
 # Start the backend (which now also serves the frontend)
 CMD ["node", "backend/server.js"]
