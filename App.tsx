@@ -23,6 +23,8 @@ import AITenantCheck from './pages/AITenantCheck';
 import StagingAI from './pages/StagingAI';
 import AISmartMatch from './pages/AISmartMatch';
 import Company from './pages/Company';
+import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 import { TrackingProvider } from './context/TrackingContext';
 
 // Wrapper to scroll to top on route change
@@ -63,6 +65,8 @@ const App: React.FC = () => {
               <Route path="/blog/:id" element={<BlogPost />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/company" element={<Company />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
           </main>
           <Footer />
