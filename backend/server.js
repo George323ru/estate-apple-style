@@ -6,16 +6,21 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
+const path = require('path');
 const authenticateToken = require('./middleware/auth');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3001; // Hosting often sets PORT
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_change_me';
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve Static Frontend (Monolith Setup)
+// We assume the frontend build is copied to '../dist' or 'public' in the Docker image
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // File Upload Setup
 const upload = multer({ dest: 'uploads/' });
@@ -204,6 +209,11 @@ app.post('/api/estates/upload', authenticateToken, upload.single('file'), async 
                 res.status(500).json({ error: 'Failed to process CSV' });
             }
         });
+});
+
+// Handle React Routing, return all requests to React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 app.listen(port, () => {

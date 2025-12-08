@@ -1,16 +1,33 @@
-# build stage
-FROM node:lts-alpine AS build-stage
+# Stage 1: Build the React Frontend
+FROM node:18-alpine as build-frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+# Force relative paths for API (so /api works on same domain)
+ENV VITE_API_URL=""
+RUN npm run build
 
+# Stage 2: Setup the Node.js Backend
+FROM node:18-alpine as production
 WORKDIR /app
 
-COPY . .
-RUN npm ci && npm run build
+# Install backend dependencies
+COPY backend/package*.json ./backend/
+WORKDIR /app/backend
+RUN npm install --production
 
-# production stage
-FROM nginx:stable-alpine AS production-stage
+# Move back to root
+WORKDIR /app
 
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copy built frontend from Stage 1 to /app/dist
+COPY --from=build-frontend /app/dist ./dist
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Copy backend source code to /app/backend
+COPY backend ./backend
+
+# Expose the port (Hosting usually sets PORT env var, but we expose 3001 as default)
+EXPOSE 3001
+
+# Start the backend (which now also serves the frontend)
+CMD ["node", "backend/server.js"]
