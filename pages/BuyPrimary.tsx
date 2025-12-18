@@ -125,6 +125,32 @@ const BuyPrimary: React.FC = () => {
     const showPlotInputs = selectedType === 'house' || selectedType === 'land';
     const showAreaInputs = selectedType !== 'land' && selectedType !== 'parking';
 
+    const [iframeLoaded, setIframeLoaded] = useState(false);
+    const [iframeError, setIframeError] = useState<string | null>(null);
+
+    // Monitor for messages from the iframe (errors, height changes, etc)
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.origin.includes('vseprodam.ru')) {
+                console.log('🤖 [Iframe Info] Message from catalog:', event.data);
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        // Timeout to detect if the iframe fails to load in a reasonable time
+        const timeout = setTimeout(() => {
+            if (!iframeLoaded) {
+                console.warn('🤖 [Iframe Warning] Catalog is taking too long to load.');
+            }
+        }, 8000);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+            clearTimeout(timeout);
+        };
+    }, [iframeLoaded]);
+
     const schemaData = {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -169,7 +195,40 @@ const BuyPrimary: React.FC = () => {
                 </div>
 
                 {/* CATALOG IFRAME */}
-                <div className="w-full overflow-hidden rounded-2xl mb-12">
+                <div className="w-full overflow-hidden rounded-2xl mb-12 min-h-[500px] relative bg-white border border-gray-100 shadow-sm">
+                    {!iframeLoaded && !iframeError && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+                                <div className="text-center">
+                                    <p className="text-gray-900 font-bold">Загрузка каталога новостроек...</p>
+                                    <p className="text-gray-500 text-sm">Подключаемся к базе данных застройщиков</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {iframeError && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-red-50 z-20 p-8 text-center">
+                            <div className="max-w-md">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                                    <Shield size={32} />
+                                </div>
+                                <p className="text-red-600 font-bold text-lg mb-2">Каталог временно недоступен</p>
+                                <p className="text-gray-600 text-sm mb-6">
+                                    {iframeError}.
+                                    Попробуйте обновить страницу или зайти позже.
+                                </p>
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="px-6 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 shadow-lg transition-colors"
+                                >
+                                    Обновить страницу
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     <iframe
                         src="https://novostroiki.vseprodam.ru/catalog/?isFrame=true&frameListSize=4"
                         width="100%"
@@ -177,6 +236,10 @@ const BuyPrimary: React.FC = () => {
                         frameBorder="0"
                         scrolling="no"
                         title="Catalog"
+                        onLoad={(e) => {
+                            console.log('🤖 [Iframe Success] Catalog loaded event fired');
+                            setIframeLoaded(true);
+                        }}
                     />
                 </div>
 
