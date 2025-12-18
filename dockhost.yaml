@@ -1,11 +1,29 @@
 version: 1
-project: my-project
+project: estate-apple-style
 
 environment:
     variables:
         VITE_AI_CHAT_PROVIDER: openrouter
         OPENROUTER_API_KEY: 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
-        GEMINI_API_KEY: <string>
-        VITE_AI_CHAT_MODEL: x-ai/grok-4.1-fast:free
-        VITE_AI_TEXT_PROVIDER: openrouter
-        VITE_AI_TEXT_MODEL: x-ai/grok-4.1-fast:free
+        # GEMINI_KEY is missing, needs to be added by user in hosting dashboard if secret
+        
+        # Database Connection (Internal Docker Network)
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: estate_db
+        POSTGRES_HOST: db
+        POSTGRES_PORT: 5432
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: estate_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
