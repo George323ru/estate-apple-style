@@ -1,5 +1,5 @@
 # Stage 1: Build the React Frontend
-FROM node:18-alpine as build-frontend
+FROM node:22-alpine AS build-frontend
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -9,7 +9,7 @@ ENV VITE_API_URL=""
 RUN npm run build
 
 # Stage 2: Setup the Node.js Backend
-FROM node:18-alpine as production
+FROM node:22-alpine AS production
 WORKDIR /app
 
 # Install backend dependencies
