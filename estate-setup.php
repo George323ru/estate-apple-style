@@ -92,4 +92,35 @@ if (function_exists('acf_add_local_field_group')):
         'show_in_rest' => true,
     ));
 
+    acf_add_local_field_group(array(
+        'key' => 'group_post_details',
+        'title' => 'Blog Post Details',
+        'fields' => array(
+            array(
+                'key' => 'field_related_service_link',
+                'label' => 'Related Service Link',
+                'name' => 'related_service_link',
+                'type' => 'text',
+                'instructions' => 'e.g. /buy-new',
+            ),
+            array(
+                'key' => 'field_related_service_label',
+                'label' => 'Related Service Label',
+                'name' => 'related_service_label',
+                'type' => 'text',
+                'instructions' => 'e.g. Каталог новостроек',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'post',
+                ),
+            ),
+        ),
+        'show_in_rest' => true,
+    ));
+
 endif;

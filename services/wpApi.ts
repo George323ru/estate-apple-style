@@ -66,15 +66,90 @@ export const loginWp = async (username: string, password: string): Promise<{ tok
     }
 };
 
+export interface WPPost {
+    id: number;
+    date: string;
+    slug: string;
+    title: { rendered: string };
+    content: { rendered: string };
+    excerpt: { rendered: string };
+    acf: {
+        related_service_link?: string;
+        related_service_label?: string;
+    };
+    _embedded?: {
+        'wp:featuredmedia'?: Array<{
+            source_url: string;
+        }>;
+    };
+}
+
+import { BlogPost } from '../types';
+
+export const mapWpPostToBlogPost = (wpItem: WPPost): BlogPost => {
+    const featuredMedia = wpItem._embedded?.['wp:featuredmedia']?.[0];
+    const image = featuredMedia?.source_url || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80';
+
+    // Format date: 2024-01-21T... -> 21 Jan 2024
+    const dateObj = new Date(wpItem.date);
+    const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+    const date = `${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+
+    // Clean excerpt from HTML
+    const excerpt = wpItem.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 160) + '...';
+
+    const post: BlogPost = {
+        id: wpItem.slug, // Use slug for SEO-friendly URLs
+        title: wpItem.title.rendered,
+        excerpt,
+        date,
+        image,
+        content: wpItem.content.rendered,
+    };
+
+    if (wpItem.acf.related_service_link) {
+        post.relatedService = {
+            link: wpItem.acf.related_service_link,
+            label: wpItem.acf.related_service_label || 'Подробнее',
+        };
+    }
+
+    return post;
+};
+
 export const fetchWpEstates = async (): Promise<Property[]> => {
     try {
         const res = await fetch(`${WP_API_URL}/estates?_embed&per_page=100`);
         if (!res.ok) throw new Error('Failed to fetch from WP');
         const data: WPEstate[] = await res.json();
-        console.log('WP Items:', data);
         return data.map(mapWpEstateToProperty);
     } catch (error) {
         console.error('WP Fetch Error:', error);
         return [];
+    }
+};
+
+export const fetchWpPosts = async (params: string = ''): Promise<BlogPost[]> => {
+    try {
+        const res = await fetch(`${WP_API_URL}/posts?_embed&per_page=100${params}`);
+        if (!res.ok) throw new Error('Failed to fetch posts from WP');
+        const data: WPPost[] = await res.json();
+        return data.map(mapWpPostToBlogPost);
+    } catch (error) {
+        console.error('WP Posts Fetch Error:', error);
+        return [];
+    }
+};
+
+export const fetchWpPostBySlug = async (slug: string): Promise<BlogPost | null> => {
+    try {
+        const res = await fetch(`${WP_API_URL}/posts?_embed&slug=${slug}`);
+        if (!res.ok) throw new Error('Failed to fetch post from WP');
+        const data: WPPost[] = await res.json();
+        if (data.length === 0) return null;
+        return mapWpPostToBlogPost(data[0]);
+    } catch (error) {
+        console.error('WP Single Post Fetch Error:', error);
+        return null;
     }
 };
