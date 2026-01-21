@@ -19,9 +19,8 @@ const AdminDashboard: React.FC = () => {
 
     const fetchStats = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || '';
-            const res = await fetch(`${apiUrl}/api/estates`);
-            const data = await res.json();
+            const { fetchWpEstates } = await import('../services/wpApi');
+            const data = await fetchWpEstates();
             setStats(data);
         } catch (e) {
             console.error("Failed to fetch stats");
@@ -130,52 +129,17 @@ const AdminDashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        <form onSubmit={handleUpload} className="space-y-6">
-                            <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer relative">
-                                <input
-                                    type="file"
-                                    accept=".csv"
-                                    onChange={handleFileChange}
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                                <div className="flex flex-col items-center gap-3">
-                                    <FileText size={40} className="text-gray-400" />
-                                    {file ? (
-                                        <p className="text-sm font-medium text-blue-600">{file.name}</p>
-                                    ) : (
-                                        <>
-                                            <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                                            <p className="text-xs text-gray-400">CSV files only</p>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {message && (
-                                <div className={`p-4 rounded-lg flex items-start gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                                    {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-                                    <p className="text-sm font-medium">{message.text}</p>
-                                </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={!file || uploading}
-                                className={`w-full py-3 rounded-xl font-semibold text-white transition-all shadow-sm ${!file || uploading
-                                    ? 'bg-gray-300 cursor-not-allowed'
-                                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'
-                                    }`}
+                        <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50">
+                            <h3 className="text-xl font-bold mb-4">Manage via WordPress</h3>
+                            <p className="text-gray-500 mb-6">Property management is now handled through the WordPress Dashboard.</p>
+                            <a
+                                href="http://localhost:8000/wp-admin"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-block px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors"
                             >
-                                {uploading ? 'Uploading...' : 'Start Import'}
-                            </button>
-                        </form>
-
-                        <div className="mt-6 pt-6 border-t border-gray-100">
-                            <p className="text-xs text-gray-400 mb-2">CSV Format Example:</p>
-                            <code className="block bg-gray-50 p-3 rounded-lg text-xs text-gray-600 font-mono overflow-x-auto">
-                                title,price,image,location,specs,tags<br />
-                                "Luxury Apt","15M","http://...","Moscow","2 rooms","Premium,Center"
-                            </code>
+                                Go to WP Admin
+                            </a>
                         </div>
                     </div>
 

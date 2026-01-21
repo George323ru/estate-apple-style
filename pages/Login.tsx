@@ -13,23 +13,17 @@ const Login: React.FC = () => {
         setError('');
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-            const response = await fetch(`${apiUrl}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
-            });
+            const { loginWp } = await import('../services/wpApi');
+            const data = await loginWp(username, password);
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
+            if (!data || !data.token) {
+                throw new Error('Invalid credentials');
             }
 
             localStorage.setItem('adminToken', data.token);
             navigate('/admin');
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || 'Login failed');
         }
     };
 

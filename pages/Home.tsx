@@ -32,14 +32,12 @@ const Home: React.FC = () => {
     const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
-    // Fetch properties from API
+    // Fetch properties from VP
     useEffect(() => {
         const fetchProperties = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || '';
-                const response = await fetch(`${apiUrl}/api/estates`);
-                if (!response.ok) throw new Error('Failed to fetch');
-                const data = await response.json();
+                const { fetchWpEstates } = await import('../services/wpApi');
+                const data = await fetchWpEstates();
                 setProperties(data);
             } catch (error) {
                 console.error("Error fetching properties:", error);

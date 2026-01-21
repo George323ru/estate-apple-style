@@ -161,6 +161,12 @@ export const api = {
    */
   fetchContent: async (type: 'properties' | 'blog' | 'reviews') => {
     console.log(`[API] Fetching content: ${type}`);
+
+    if (type === 'properties') {
+      const { fetchWpEstates } = await import('./wpApi');
+      return fetchWpEstates();
+    }
+
     await delay(200);
     // Return [] or mock data. Ideally, this checks a headless CMS (Strapi, Contentful)
     return [];

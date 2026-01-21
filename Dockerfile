@@ -1,34 +1,24 @@
 # Stage 1: Build the React Frontend
-FROM node:22-alpine AS build-frontend
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-# Force relative paths for API (so /api works on same domain)
-ENV VITE_API_URL=""
 RUN npm run build
 
-# Stage 2: Setup the Node.js Backend
-FROM node:22-alpine AS production
-WORKDIR /app
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+# Add custom nginx config if needed for SPA routing, but default might work for root
+# For SPA usually we need to redirect all 404s to index.html
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+    root /usr/share/nginx/html; \
+    index index.html index.htm; \
+    try_files $uri $uri/ /index.html; \
+    } \
+    }' > /etc/nginx/conf.d/default.conf
 
-# Install backend dependencies
-COPY backend/package*.json ./backend/
-WORKDIR /app/backend
-RUN npm install --production
-
-# Move back to root
-WORKDIR /app
-
-# Copy built frontend from Stage 1 to /app/dist
-COPY --from=build-frontend /app/dist ./dist
-
-# Copy backend source code to /app/backend
-COPY backend ./backend
-
-# Default to port 80 for hosting (standard HTTP port)
-ENV PORT=80
 EXPOSE 80
-
-# Start the backend (which now also serves the frontend)
-CMD ["node", "backend/server.js"]
+CMD ["nginx", "-g", "daemon off;"]
