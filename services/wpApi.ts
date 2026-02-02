@@ -110,7 +110,7 @@ export const mapWpPostToBlogPost = (wpItem: WPPost): BlogPost => {
         content: wpItem.content.rendered,
     };
 
-    if (wpItem.acf.related_service_link) {
+    if (wpItem.acf?.related_service_link) {
         post.relatedService = {
             link: wpItem.acf.related_service_link,
             label: wpItem.acf.related_service_label || 'Подробнее',
