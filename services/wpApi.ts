@@ -1,6 +1,9 @@
 import { Property } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/wp-json';
+const envUrl = import.meta.env.VITE_API_URL;
+const BASE_URL = envUrl
+    ? (envUrl.includes('wp-json') ? envUrl : `${envUrl.replace(/\/$/, '')}/wp-json`)
+    : 'https://realtorvspb.ru/wp-json'; // Fallback to production if env var missing
 const WP_API_URL = `${BASE_URL}/wp/v2`;
 const AUTH_URL = `${BASE_URL}/jwt-auth/v1/token`;
 
